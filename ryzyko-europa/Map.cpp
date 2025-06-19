@@ -18,110 +18,108 @@ Map::Map()
 
 void Map::init()
 {
-	provinces_vec.assign(5, Province());
+	// analyzeImage();
+	analyzeImage2();
+
+	updateProvinces();
 
 	provinces_vec.at(0).neighbours.assign({
 		&provinces_vec.at(1),
-		&provinces_vec.at(3)
+		&provinces_vec.at(2)
 		});
 
 	provinces_vec.at(1).neighbours.assign({
 		&provinces_vec.at(0),
-		&provinces_vec.at(2),
-		&provinces_vec.at(4)
+		&provinces_vec.at(3)
 		});
 
 	provinces_vec.at(2).neighbours.assign({
-		&provinces_vec.at(1),
+		&provinces_vec.at(0),
+		&provinces_vec.at(3),
 		&provinces_vec.at(4)
 		});
 
 	provinces_vec.at(3).neighbours.assign({
-		&provinces_vec.at(0),
+		&provinces_vec.at(1),
+		&provinces_vec.at(2),
 		&provinces_vec.at(4)
 		});
 
 	provinces_vec.at(4).neighbours.assign({
-		&provinces_vec.at(1),
 		&provinces_vec.at(2),
 		&provinces_vec.at(3)
 		});
 }
 
-void Map::analyzeImage()
+void Map::analyzeImage2()
 {
+	map<tuple<sf::Uint8, sf::Uint8, sf::Uint8>, int> colors_map;
+
 	int w = texture.getSize().x;
 	int h = texture.getSize().y;
 
 	index_vec.assign(w, vector<int>(h, -1));
 
-	int index = 0;
+	int new_index = 0;
 	for (int x = 0; x < w; ++x)
 	{
 		for (int y = 0; y < h; ++y)
 		{
-			if (index_vec[x][y] != -1)
-				continue;
-
 			sf::Color color = image.getPixel(x, y);
 
 			if (color == sf::Color::White)
 				continue;
 
-			Rect rect(x, y, x, y);
-			vector<sf::Vector2i> que;
-			que.emplace_back(x, y);
+			tuple<sf::Uint8, sf::Uint8, sf::Uint8> tp = { color.r, color.g, color.b };
 
-			for (int i = 0; i < que.size(); ++i)
+			auto element = colors_map.find(tp);
+			if (element == colors_map.end())
 			{
-				sf::Vector2i pos = que[i];
-				index_vec[pos.x][pos.y] = index;
-				rect.merge(Rect(pos.x, pos.y, pos.x, pos.y));
+				colors_map.emplace(tp, new_index);
+				index_vec[x][y] = new_index;
 
-				if (pos.x + 1 < w && index_vec[pos.x + 1][pos.y] == -1 && image.getPixel(pos.x + 1, pos.y) == color)
-				{
-					que.emplace_back(pos.x + 1, pos.y);
-					index_vec[pos.x + 1][pos.y] = -2;
-				}
+				Province province(Rect(x, y, x, y));
+				province.pixels.emplace_back(x, y);
 
-				if (pos.y + 1 < h && index_vec[pos.x][pos.y + 1] == -1 && image.getPixel(pos.x, pos.y + 1) == color)
-				{
-					que.emplace_back(pos.x, pos.y + 1);
-					index_vec[pos.x][pos.y + 1] = -2;
-				}
+				provinces_vec.push_back(province);
 
-				if (pos.x - 1 >= 0 && index_vec[pos.x - 1][pos.y] == -1 && image.getPixel(pos.x - 1, pos.y) == color)
-				{
-					que.emplace_back(pos.x - 1, pos.y);
-					index_vec[pos.x - 1][pos.y] = -2;
-				}
-
-				if (pos.y - 1 >= 0 && index_vec[pos.x][pos.y - 1] == -1 && image.getPixel(pos.x, pos.y - 1) == color)
-				{
-					que.emplace_back(pos.x, pos.y - 1);
-					index_vec[pos.x][pos.y - 1] = -2;
-				}
+				++new_index;
+			}
+			else
+			{
+				index_vec[x][y] = element->second;
+				Province &province = provinces_vec[element->second];
+				province.rect.merge(Rect(x, y, x, y));
+				province.pixels.emplace_back(x, y);
 			}
 
-			++rect.x2;
-			++rect.y2;
-
-			cout << index << ". ";
-			rect.print();
-			cout << '\n';
-
-			rect.move(rectangle.getPosition().x, rectangle.getPosition().y);
-			
-			provinces_vec.emplace_back(rect);
-
-			++index;
+			image.setPixel(x, y, sf::Color::Blue);
 		}
+	}
+
+	texture.loadFromImage(image);
+}
+
+void Map::updateProvinces()
+{
+	for (auto& province : provinces_vec)
+	{
+		province.rect.move(rectangle.getPosition().x, rectangle.getPosition().y);
 	}
 }
 
 void printColor(sf::Color &color)
 {
 	cout << "( " << (int)color.r << ", " << (int)color.g << ", " << (int)color.r << " )";
+}
+
+void Map::setProvinceColor(int id, const sf::Color &color)
+{
+	if (id == -1)
+		return;
+
+	for (auto pos : provinces_vec[id].pixels)
+		image.setPixel(pos.x, pos.y, color);
 }
 
 int Map::updateProvinceId(int x, int y)
@@ -132,7 +130,15 @@ int Map::updateProvinceId(int x, int y)
 	if (x < 0 || image.getSize().x <= x || y < 0 || image.getSize().y <= y)
 		return -1;
 
-	active_province_id = index_vec[x][y];
+	int next_province_id = -1;
+	if (active_province_id != index_vec[x][y])
+		next_province_id = index_vec[x][y];
+
+	setProvinceColor(next_province_id, sf::Color::Red);
+	setProvinceColor(active_province_id, sf::Color::Blue);
+	texture.loadFromImage(image);
+
+	active_province_id = next_province_id;
 	return active_province_id;
 }
 
@@ -146,7 +152,16 @@ void Map::draw(sf::RenderWindow &window) const
 		province.draw(window);
 	}
 	//*/
-	
+
+	/*
 	if (0 <= active_province_id)
-		provinces_vec[active_province_id].draw(window);
+	{
+		provinces_vec[active_province_id].draw(window, sf::Color(0, 255, 0, 63));
+
+		for (auto* neighbour : provinces_vec[active_province_id].neighbours)
+		{
+			neighbour->draw(window, sf::Color(255, 0, 0, 63));
+		}
+	}
+	//*/
 }

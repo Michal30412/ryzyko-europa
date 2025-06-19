@@ -37,7 +37,7 @@ struct Rect
 		x2 += x;
 		y2 += y;
 	}
-	void merge(const Rect r)
+	void merge(const Rect &r)
 	{
 		x1 = min(x1, r.x1);
 		y1 = min(y1, r.y1);
@@ -66,13 +66,15 @@ class Province
 
 	vector<Province*> neighbours;
 
+	vector<sf::Vector2f> pixels;
+
 	// sf::Texture texture;
 	// sf::RectangleShape rectangle;
 
 public:
 	Province();
 	Province(const Rect &_rect);
-	void draw(sf::RenderWindow &window) const;
+	void draw(sf::RenderWindow &window, const sf::Color &color) const;
 };
 
 #endif

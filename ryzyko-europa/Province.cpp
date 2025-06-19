@@ -12,12 +12,12 @@ Province::Province(const Rect &_rect)
 	rect = _rect;
 }
 
-void Province::draw(sf::RenderWindow &window) const
+void Province::draw(sf::RenderWindow &window, const sf::Color &color) const
 {
 	sf::RectangleShape rectangle;
-	rectangle.setSize(sf::Vector2f(rect.x2 - rect.x1, rect.y2 - rect.y1));
+	rectangle.setSize(sf::Vector2f(rect.x2 - rect.x1 + 1, rect.y2 - rect.y1 + 1));
 	rectangle.setPosition(rect.x1, rect.y1);
 	// rectangle.setFillColor(sf::Color::Green);
-	rectangle.setFillColor(sf::Color(0, 255, 0, 63));
+	rectangle.setFillColor(color);
 	window.draw(rectangle);
 }

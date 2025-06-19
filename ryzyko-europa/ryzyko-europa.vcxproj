@@ -131,11 +131,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Button.cpp" />
+    <ClCompile Include="NumberInput.cpp" />
+    <ClCompile Include="Gui.cpp" />
+    <ClCompile Include="GuiComponent.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Province.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Button.h" />
+    <ClInclude Include="NumberInput.h" />
+    <ClInclude Include="Gui.h" />
+    <ClInclude Include="GuiComponent.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Province.h" />
   </ItemGroup>

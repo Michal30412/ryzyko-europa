@@ -20,7 +20,10 @@ class Map
 public:
 	Map();
 	void init();
-	void analyzeImage();
+	// void analyzeImage();
+	void analyzeImage2();
+	void updateProvinces();
+	void setProvinceColor(int id, const sf::Color &color);
 	int updateProvinceId(int x, int y);
 	void draw(sf::RenderWindow &window) const;
 };
