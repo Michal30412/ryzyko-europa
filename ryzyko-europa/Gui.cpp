@@ -2,13 +2,12 @@
 
 Gui::Gui(sf::Font &font)
 {
-	vec.push_back(new Button(10, 10 + 0 * 60, 150, 50, L"Rekrutacja", font));
-	vec.push_back(new Button(10, 10 + 1 * 60, 150, 50, L"Przesuñ", font));
-	vec.push_back(new Button(10, 10 + 2 * 60, 150, 50, L"Atakuj", font));
-	vec.push_back(new Button(10, 10 + 3 * 60, 150, 50, L"Wymieñ karty", font));
-	vec.push_back(new Button(10, 10 + 4 * 60, 150, 50, L"Nastêpna tura", font));
+	vec.push_back(new Button(10, 10 + 3 * 60, 150, 50, L"Karty", font));
+	vec.push_back(new Button(1280 - (1280 - 600) / 2 + 20, 720 - 100 + (100 - 50) / 2, 150, 50, L"Pomiñ fazê", font));
 
 	vec.push_back(new NumberInput(10, 10 + 5 * 60, 150, 50, 3, font));
+	vec.push_back(new NumberInput(10, 10 + 6 * 60, 150, 50, 3, font));
+	vec.push_back(new NumberInput(10, 10 + 7 * 60, 150, 50, 3, font));
 }
 
 Gui::~Gui()

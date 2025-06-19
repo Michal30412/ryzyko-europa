@@ -21,7 +21,7 @@ void Map::init(sf::Font &font)
 
 	updateProvinces();
 
-	provinces_vec[0].neighbours.assign({ 1, 2 });
+	provinces_vec[0].neighbours.assign({ 1, 2, 37 });
 	provinces_vec[1].neighbours.assign({ 0, 2, 6, 12 });
 	provinces_vec[2].neighbours.assign({ 0, 1, 3, 6 });
 	provinces_vec[3].neighbours.assign({ 2, 6, 5, 4 });
@@ -45,8 +45,8 @@ void Map::init(sf::Font &font)
 	provinces_vec[21].neighbours.assign({ 16, 25, 24, 19 });
 	provinces_vec[22].neighbours.assign({ 20, 25, 26 });
 	provinces_vec[23].neighbours.assign({ 18, 17, 19, 24, 27, 28 });
-	provinces_vec[24].neighbours.assign({ 19, 21, 29, 27, 23 });
-	provinces_vec[25].neighbours.assign({ 16, 20, 22, 21 });
+	provinces_vec[24].neighbours.assign({ 19, 21, 29, 27, 23, 25 });
+	provinces_vec[25].neighbours.assign({ 16, 20, 22, 21, 24 });
 	provinces_vec[26].neighbours.assign({ 22 });
 	provinces_vec[27].neighbours.assign({ 23, 24, 29, 31, 28 });
 	provinces_vec[28].neighbours.assign({ 23, 27, 31, 30 });
@@ -58,7 +58,7 @@ void Map::init(sf::Font &font)
 	provinces_vec[34].neighbours.assign({ 36, 39, 38 });
 	provinces_vec[35].neighbours.assign({ 30, 32, 37 });
 	provinces_vec[36].neighbours.assign({ 31, 29, 34 });
-	provinces_vec[37].neighbours.assign({ 35, 32, 33, 40 });
+	provinces_vec[37].neighbours.assign({ 0, 35, 32, 33, 40 });
 	provinces_vec[38].neighbours.assign({ 34, 41 });
 	provinces_vec[39].neighbours.assign({ 34, 41 });
 	provinces_vec[40].neighbours.assign({ 33, 37 });
@@ -147,14 +147,12 @@ void Map::setProvinceColor(int id, const sf::Color &color)
 	if (id == -1)
 		return;
 
-	for (auto pos : provinces_vec[id].pixels)
-		image.setPixel(pos.x, pos.y, color);
+	provinces_vec[id].setColor(color, image);
 }
 
 void Map::setProvinceColor(Province& province, const sf::Color &color)
 {
-	for (auto pos : province.pixels)
-		image.setPixel(pos.x, pos.y, color);
+	province.setColor(color, image);
 }
 
 int Map::updateActiveProvince(int x, int y, bool with_neighbours)

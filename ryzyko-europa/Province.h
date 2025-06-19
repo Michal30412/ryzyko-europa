@@ -12,8 +12,7 @@ enum class ProvinceType
 	Mountain,
 	Forest,
 	Field,
-	City,
-	Capital
+	City
 };
 
 class Province
@@ -28,6 +27,7 @@ class Province
 	vector<int> neighbours;
 	vector<sf::Vector2f> pixels;
 	sf::Vector2<double> center;
+	sf::Color color;
 
 	sf::Text text;
 
@@ -35,7 +35,8 @@ public:
 	Province();
 	Province(int _index, sf::Font &font, const sf::String &str = "");
 	void setString(const sf::String &str);
-	void setCenter(sf::Vector2<double>& _center);
+	void setCenter(const sf::Vector2<double>& _center);
+	void setColor(const sf::Color &_color, sf::Image &image);
 	void print() const;
 	void draw(sf::RenderWindow &window) const;
 };

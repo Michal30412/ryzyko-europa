@@ -22,13 +22,25 @@ void Province::setString(const sf::String &str)
 	setCenter(center);
 }
 
-void Province::setCenter(sf::Vector2<double>& _center)
+void Province::setCenter(const sf::Vector2<double>& _center)
 {
 	center = _center;
 	sf::FloatRect rect = text.getLocalBounds();
 
 	text.setPosition(center.x - rect.width / 2.f - rect.left, center.y - rect.height / 2.f - rect.top);
 	cout << text.getPosition().x << ", " << text.getPosition().y << '\n';
+}
+
+void Province::setColor(const sf::Color &_color, sf::Image &image)
+{
+	if (color == _color)
+		return;
+
+	color = _color;
+	for (auto& pixel : pixels)
+	{
+		image.setPixel(pixel.x, pixel.y, color);
+	}
 }
 
 void Province::print() const
@@ -38,14 +50,5 @@ void Province::print() const
 
 void Province::draw(sf::RenderWindow &window) const
 {
-	/*
-	sf::RectangleShape rectangle;
-	rectangle.setSize(sf::Vector2f(rect.x2 - rect.x1 + 1, rect.y2 - rect.y1 + 1));
-	rectangle.setPosition(rect.x1, rect.y1);
-	// rectangle.setFillColor(sf::Color::Green);
-	rectangle.setFillColor(color);
-	window.draw(rectangle);
-	*/
-
 	window.draw(text);
 }

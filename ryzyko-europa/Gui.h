@@ -12,10 +12,9 @@ enum GuiCompType
 {
 	Butt1,
 	Butt2,
-	Butt3,
-	Butt4,
-	Butt5,
 	NumInp1,
+	NumInp2,
+	NumInp3,
 	NONE
 };
 

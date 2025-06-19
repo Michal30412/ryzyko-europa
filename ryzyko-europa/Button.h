@@ -8,7 +8,6 @@ class Button : public GuiComponent
 public:
 	Button();
 	Button(int _x, int _y, int _w, int _h);
-	Button(int _x, int _y, int _w, int _h, sf::String _text);
 	Button(int _x, int _y, int _w, int _h, sf::String _text, sf::Font &_font);
 	void setPosition(int _x, int _y);
 	void setRectangle(int _x, int _y, int _w, int _h);

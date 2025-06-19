@@ -136,6 +136,8 @@
     <ClCompile Include="Gui.cpp" />
     <ClCompile Include="GuiComponent.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Province.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
@@ -145,6 +147,8 @@
     <ClInclude Include="Gui.h" />
     <ClInclude Include="GuiComponent.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="Province.h" />
     <ClInclude Include="Rect.h" />
     <ClInclude Include="Units.h" />
