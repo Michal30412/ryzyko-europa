@@ -5,8 +5,10 @@ Province::Province()
 	type = ProvinceType::Mountain;
 }
 
-Province::Province(sf::Font &font, const sf::String &str) : Province()
+Province::Province(int _index, sf::Font &font, const sf::String &str) : Province()
 {
+	index = _index;
+
 	text.setFont(font);
 	text.setCharacterSize(20);
 	text.setFillColor(sf::Color::Black);

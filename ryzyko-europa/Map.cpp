@@ -21,34 +21,48 @@ void Map::init(sf::Font &font)
 
 	updateProvinces();
 
-	provinces_vec[0].neighbours.assign({
-		&provinces_vec[1],
-		&provinces_vec[2]
-		});
-
-	provinces_vec[1].neighbours.assign({
-		&provinces_vec[0],
-		&provinces_vec[2],
-		&provinces_vec[6],
-		&provinces_vec[12]
-		});
-
-	provinces_vec[2].neighbours.assign({
-		&provinces_vec[0],
-		&provinces_vec[3],
-		&provinces_vec[4]
-		});
-
-	provinces_vec[3].neighbours.assign({
-		&provinces_vec[1],
-		&provinces_vec[2],
-		&provinces_vec[4]
-		});
-
-	provinces_vec[4].neighbours.assign({
-		&provinces_vec[2],
-		&provinces_vec[3]
-		});
+	provinces_vec[0].neighbours.assign({ 1, 2 });
+	provinces_vec[1].neighbours.assign({ 0, 2, 6, 12 });
+	provinces_vec[2].neighbours.assign({ 0, 1, 3, 6 });
+	provinces_vec[3].neighbours.assign({ 2, 6, 5, 4 });
+	provinces_vec[4].neighbours.assign({ 3, 5, 8 });
+	provinces_vec[5].neighbours.assign({ 3, 6, 11, 4 });
+	provinces_vec[6].neighbours.assign({ 2, 1, 11, 5, 3 });
+	provinces_vec[7].neighbours.assign({ 8, 9, 10 });
+	provinces_vec[8].neighbours.assign({ 4, 9, 7 });
+	provinces_vec[9].neighbours.assign({ 8, 7, 10, 16 });
+	provinces_vec[10].neighbours.assign({ 7, 9 });
+	provinces_vec[11].neighbours.assign({ 5, 6, 12 });
+	provinces_vec[12].neighbours.assign({ 1, 11, 15 });
+	provinces_vec[13].neighbours.assign({ 15, 18, 17, 14 });
+	provinces_vec[14].neighbours.assign({ 13, 17, 19, 16 });
+	provinces_vec[15].neighbours.assign({ 12, 18, 13 });
+	provinces_vec[16].neighbours.assign({ 9, 14, 19, 21, 25, 20 });
+	provinces_vec[17].neighbours.assign({ 14, 19, 23, 18, 13 });
+	provinces_vec[18].neighbours.assign({ 15, 13, 17, 23 });
+	provinces_vec[19].neighbours.assign({ 14, 17, 23, 24, 21, 16 });
+	provinces_vec[20].neighbours.assign({ 16, 25, 22 });
+	provinces_vec[21].neighbours.assign({ 16, 25, 24, 19 });
+	provinces_vec[22].neighbours.assign({ 20, 25, 26 });
+	provinces_vec[23].neighbours.assign({ 18, 17, 19, 24, 27, 28 });
+	provinces_vec[24].neighbours.assign({ 19, 21, 29, 27, 23 });
+	provinces_vec[25].neighbours.assign({ 16, 20, 22, 21 });
+	provinces_vec[26].neighbours.assign({ 22 });
+	provinces_vec[27].neighbours.assign({ 23, 24, 29, 31, 28 });
+	provinces_vec[28].neighbours.assign({ 23, 27, 31, 30 });
+	provinces_vec[29].neighbours.assign({ 24, 27, 31, 36});
+	provinces_vec[30].neighbours.assign({ 28, 31, 33, 32, 35 });
+	provinces_vec[31].neighbours.assign({ 28, 27, 29, 36, 33, 30 });
+	provinces_vec[32].neighbours.assign({ 37, 35, 30, 33 });
+	provinces_vec[33].neighbours.assign({ 37, 32, 30, 31, 40 });
+	provinces_vec[34].neighbours.assign({ 36, 39, 38 });
+	provinces_vec[35].neighbours.assign({ 30, 32, 37 });
+	provinces_vec[36].neighbours.assign({ 31, 29, 34 });
+	provinces_vec[37].neighbours.assign({ 35, 32, 33, 40 });
+	provinces_vec[38].neighbours.assign({ 34, 41 });
+	provinces_vec[39].neighbours.assign({ 34, 41 });
+	provinces_vec[40].neighbours.assign({ 33, 37 });
+	provinces_vec[41].neighbours.assign({ 38, 39 });
 }
 
 int Map::getProvinceId(int x, int y) const
@@ -89,7 +103,7 @@ void Map::analyzeImage(sf::Font &font)
 				colors_map.emplace(tp, new_index);
 				index_vec[x][y] = new_index;
 
-				Province province = Province(font, to_string(new_index));
+				Province province = Province(new_index, font, to_string(new_index));
 				province.pixels.emplace_back(x, y);
 				province.center = sf::Vector2<double>(x, y);
 
@@ -160,8 +174,8 @@ int Map::updateActiveProvince(int x, int y, bool with_neighbours)
 		setProvinceColor(active_province_id, sf::Color::Blue);
 		if (show_neighbours)
 		{
-			for (auto* neighbour : provinces_vec[active_province_id].neighbours)
-				setProvinceColor(*neighbour, sf::Color::Blue);
+			for (auto neighbour : provinces_vec[active_province_id].neighbours)
+				setProvinceColor(neighbour, sf::Color::Blue);
 		}
 	}
 
@@ -170,8 +184,8 @@ int Map::updateActiveProvince(int x, int y, bool with_neighbours)
 		setProvinceColor(next_province_id, sf::Color::Red);
 		if (with_neighbours)
 		{
-			for (auto* neighbour : provinces_vec[next_province_id].neighbours)
-				setProvinceColor(*neighbour, sf::Color::Yellow);
+			for (auto neighbour : provinces_vec[next_province_id].neighbours)
+				setProvinceColor(neighbour, sf::Color::Yellow);
 		}
 	}
 

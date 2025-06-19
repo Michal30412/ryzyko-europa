@@ -24,6 +24,7 @@ public:
 	int getProvinceId(int x, int y) const;
 	void analyzeImage(sf::Font &font);
 	void updateProvinces();
+	void loadNeighbours(string path);
 	void setProvinceColor(int id, const sf::Color &color);
 	void setProvinceColor(Province& province, const sf::Color &color);
 	int updateActiveProvince(int x, int y, bool with_neighbours = false);

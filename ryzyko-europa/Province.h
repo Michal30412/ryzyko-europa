@@ -20,10 +20,12 @@ class Province
 {
 	friend class Map;
 
+	int index;
+
 	ProvinceType type;
 	Units units;
 
-	vector<Province*> neighbours;
+	vector<int> neighbours;
 	vector<sf::Vector2f> pixels;
 	sf::Vector2<double> center;
 
@@ -31,7 +33,7 @@ class Province
 
 public:
 	Province();
-	Province(sf::Font &font, const sf::String &str = "");
+	Province(int _index, sf::Font &font, const sf::String &str = "");
 	void setString(const sf::String &str);
 	void setCenter(sf::Vector2<double>& _center);
 	void print() const;
