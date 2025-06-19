@@ -4,11 +4,11 @@
 
 int main()
 {
-	Map map;
-	map.init();
-
 	sf::Font font;
 	font.loadFromFile("arial.ttf");
+
+	Map map;
+	map.init(font);
 
 	Gui gui(font);
 
@@ -42,9 +42,16 @@ int main()
 				case GuiCompType::Butt5:
 					cout << "Butt5\n";
 					break;
-				default:
-					cout << "Clicked province id: " << map.updateProvinceId(event.mouseButton.x, event.mouseButton.y) << '\n';
+				case GuiCompType::NumInp1:
+					cout << "NumInp1\n";
 					break;
+				default:
+				{
+					int id = map.updateActiveProvince(event.mouseButton.x, event.mouseButton.y, true);
+					cout << "Clicked province id: " << id << '\n';
+
+					break;
+				}
 				}
 			}
 		}

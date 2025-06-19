@@ -16,15 +16,17 @@ class Map
 	vector<vector<int>> index_vec;
 
 	int active_province_id;
+	bool show_neighbours;
 
 public:
 	Map();
-	void init();
-	// void analyzeImage();
-	void analyzeImage2();
+	void init(sf::Font &font);
+	int getProvinceId(int x, int y) const;
+	void analyzeImage(sf::Font &font);
 	void updateProvinces();
 	void setProvinceColor(int id, const sf::Color &color);
-	int updateProvinceId(int x, int y);
+	void setProvinceColor(Province& province, const sf::Color &color);
+	int updateActiveProvince(int x, int y, bool with_neighbours = false);
 	void draw(sf::RenderWindow &window) const;
 };
 

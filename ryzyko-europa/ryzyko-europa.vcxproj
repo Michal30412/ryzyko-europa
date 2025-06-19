@@ -146,6 +146,8 @@
     <ClInclude Include="GuiComponent.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Province.h" />
+    <ClInclude Include="Rect.h" />
+    <ClInclude Include="Units.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

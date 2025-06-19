@@ -39,11 +39,6 @@ void Button::setRectangle(int _x, int _y, int _w, int _h)
 	text.setPosition(x + 10, y + 10);
 }
 
-void Button::setFont(sf::Font &font)
-{
-	text.setFont(font);
-}
-
 void Button::setText(sf::String _text)
 {
 	text.setString(_text);
@@ -63,6 +58,5 @@ bool Button::handleEvent(sf::Event &e)
 void Button::draw(sf::RenderWindow &window) const
 {
 	window.draw(shape);
-
 	window.draw(text);
 }

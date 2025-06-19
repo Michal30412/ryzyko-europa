@@ -8,8 +8,7 @@ Gui::Gui(sf::Font &font)
 	vec.push_back(new Button(10, 10 + 3 * 60, 150, 50, L"Wymieñ karty", font));
 	vec.push_back(new Button(10, 10 + 4 * 60, 150, 50, L"Nastêpna tura", font));
 
-	// vec.push_back(new CheckBox(10, 10 + 5 * 60, 50, 50, true));
-	// vec.push_back(new CheckBox(10, 10 + 6 * 60, 50, 50, true));
+	vec.push_back(new NumberInput(10, 10 + 5 * 60, 150, 50, 3, font));
 }
 
 Gui::~Gui()
@@ -20,7 +19,7 @@ Gui::~Gui()
 
 GuiComponent* Gui::getComponent(int index)
 {
-	return vec.at(index);
+	return vec[index];
 }
 
 GuiCompType Gui::handleEvent(sf::Event &e)

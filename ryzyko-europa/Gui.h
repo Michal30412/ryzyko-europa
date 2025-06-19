@@ -15,8 +15,7 @@ enum GuiCompType
 	Butt3,
 	Butt4,
 	Butt5,
-	Chbx1,
-	Chbx2,
+	NumInp1,
 	NONE
 };
 

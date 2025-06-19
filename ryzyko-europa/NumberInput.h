@@ -3,14 +3,13 @@
 
 #include "GuiComponent.h"
 #include <string>
+#include <iostream>
 
 using namespace std;
-
 
 class NumberInput : public GuiComponent
 {
 	int value;
-	sf::Text text;
 
 public:
 	NumberInput();
