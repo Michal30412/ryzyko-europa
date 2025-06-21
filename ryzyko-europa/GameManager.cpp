@@ -148,12 +148,16 @@ void GameManager::handleEvent(sf::Event &event)
 				if (stage == 0)
 				{
 					first_id = map->getActiveProvinceId();
+					if (first_id == -1)
+						break;
 					Units& units = map->getActiveProvince().getUnits();
 					resetNumberInputsValues(units.count_tab[0], units.count_tab[1], units.count_tab[2]);
 					++stage;
 				}
 				else if (stage == 1)
 				{
+					if (map->getActiveProvinceId() == -1)
+						break;
 					++stage;
 				}
 				else if (stage >= 2)
@@ -165,13 +169,16 @@ void GameManager::handleEvent(sf::Event &event)
 				if (stage == 0)
 				{
 					first_id = map->getActiveProvinceId();
+					if (first_id == -1)
+						break;
 					Units& units = map->getActiveProvince().getUnits();
 					resetNumberInputsValues(units.count_tab[0], units.count_tab[1], units.count_tab[2]);
-
 					++stage;
 				}
 				else if (stage == 1)
 				{
+					if (map->getActiveProvinceId() == -1)
+						break;
 					++stage;
 				}
 				else if (stage >= 2)
@@ -184,9 +191,8 @@ void GameManager::handleEvent(sf::Event &event)
 						map->texture.loadFromImage(map->image);
 
 						swap(map->getActiveProvince().getUnits(), map->provinces_vec[first_id].getUnits());
-
-						setResultText(succ.second); // text
 					}
+					setResultText(succ.second); // text
 					nextTurn();
 				}
 				break;
@@ -442,10 +448,7 @@ void GameManager::draw(sf::RenderWindow &window) const
 		gui->draw(window, true);
 
 		for (int i = 0; i < 3; ++i)
-		{
-			window.draw(small_rectangles[i]);
 			window.draw(small_texts[i]);
-		}
 	}
 	else
 		gui->draw(window, false);
@@ -464,6 +467,9 @@ void GameManager::draw(sf::RenderWindow &window) const
 
 	if (begun)
 	{
+		for (int i = 0; i < 3; ++i)
+			window.draw(small_rectangles[i]);
+
 		if (map->active_province_id != -1)
 		{
 			window.draw(active_province_rectangle);
