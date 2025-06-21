@@ -1,8 +1,10 @@
 #ifndef GAMEMANAGER_H
 #define GAMEMANAGER_H
 
-#include <SfML/Graphics.hpp>
+#include <SFML/Graphics.hpp>
 
+#include "Map.h"
+#include "Gui.h"
 #include "Player.h"
 
 enum PlayerPhase
@@ -15,8 +17,16 @@ enum PlayerPhase
 
 class GameManager
 {
+	Map *map;
+	Gui *gui;
+
 	vector<Player> players_vec;
 	
+	int stage;
+
+	int first_id;
+
+	bool begun; // begun normal game (after start)
 	int current_player;
 	PlayerPhase current_phase;
 
@@ -24,17 +34,33 @@ class GameManager
 	sf::RectangleShape red_rectangle;
 	sf::RectangleShape small_rectangles[3];
 
+	sf::Text active_province_texts[3];
+	sf::RectangleShape active_province_rectangle;
+
+	sf::Text terrain_text;
+	sf::RectangleShape terrain_rectangle;
+
 	void setText(const string &str);
 
 public:
 	GameManager();
-	GameManager(sf::Font &_font);
+	GameManager(Map* _map, Gui* _gui, sf::Font &_font);
+	void handleEvent(sf::Event &event);
+	void setActiveProvinceText(int id, const sf::String &_text);
+	void setActiveProvinceTexts();
 	void setCurrentPlayer(int curr);
+	void setTerrainText();
+	void NumberInputsEvent(int clicked_id);
+	void resetNumberInputsValues(int a, int b, int c);
 	int changeCurrentPlayer();
 	int getCurrentPlayerId() const;
 	void nextTurn();
 	const Player& getCurrentPlayer() const;
 	void draw(sf::RenderWindow &window) const;
 };
+
+int rollDice(int numDice);
+int getTerrainBonus(UnitType unit, TerrainType terrain, bool isAttack, bool isCapital);
+bool resolveBattle(TerrainType terrain, bool isDefenderCapital, int attackerUnits[3], int defenderUnits[3]);
 
 #endif

@@ -13,6 +13,7 @@ NumberInput::NumberInput(int _x, int _y, int _w, int _h, int _value) : GuiCompon
 	text.setFillColor(sf::Color::Black);
 
 	setValue(_value);
+	prv_value = 0;
 }
 
 NumberInput::NumberInput(int _x, int _y, int _w, int _h, int _value, sf::Font &_font) : GuiComponent(_x, _y, _w, _h)
@@ -24,10 +25,12 @@ NumberInput::NumberInput(int _x, int _y, int _w, int _h, int _value, sf::Font &_
 	text.setFillColor(sf::Color::Black);
 
 	setValue(_value);
+	prv_value = 0;
 }
 
 void NumberInput::setValue(int _value)
 {
+	prv_value = value;
 	value = _value;
 	text.setString(to_string(_value));
 
@@ -35,9 +38,19 @@ void NumberInput::setValue(int _value)
 	text.setPosition((float)x + ((float)w - r.width) / 2.f - r.left, (float)y + ((float)h - r.height) / 2.f - r.top);
 }
 
+int NumberInput::getPrvValue() const
+{
+	return prv_value;
+}
+
 int NumberInput::getValue() const
 {
 	return value;
+}
+
+int NumberInput::getDifference() const
+{
+	return value - prv_value;
 }
 
 bool NumberInput::handleEvent(sf::Event &e)

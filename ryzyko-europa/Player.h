@@ -1,6 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include <SFML/Graphics.hpp>
 #include <iostream>
 #include <vector>
 
@@ -10,18 +11,25 @@ using namespace std;
 
 class Player
 {
-	int cards[3]; // infantry, cavalry, artillery
+	int player_id;
 
+	Units cards;
 	vector<int> provinces_vec;
+	sf::Color color;
 
-	bool provice_;
+	bool province_captured;
 
 public:
-	Player();
+	Player(int id, const sf::Color& _color);
+	void setColor(sf::Color &_color);
+	void startTurn();
 	void addProvince(int id);
 	void deleteProvince(int province_id);
-	int getProvinces(int id) const;
-	vector<int>& getProvinces();
+	sf::Color& getColor();
+	int getProvince(int id) const;
+	vector<int>& getProvincesVec();
+	Units& getCards();
+	void printCards() const;
 };
 
 #endif

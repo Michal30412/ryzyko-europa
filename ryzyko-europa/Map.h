@@ -2,12 +2,13 @@
 #define MAP_H
 
 #include "Province.h"
-#include <map>
 
 using namespace std;
 
 class Map
 {
+	friend class GameManager;
+
 	sf::Image image;
 	sf::Texture texture;
 	sf::RectangleShape rectangle;
@@ -22,10 +23,11 @@ public:
 	Map();
 	void init(sf::Font &font);
 	int getProvinceId(int x, int y) const;
+	Province& getActiveProvince();
+	int getActiveProvinceId() const;
 	void analyzeImage(sf::Font &font);
 	void updateProvinces();
-	void setProvinceColor(int id, const sf::Color &color);
-	void setProvinceColor(Province& province, const sf::Color &color);
+	void setActiveProvince(int id, bool with_neighbours = false);
 	int updateActiveProvince(int x, int y, bool with_neighbours = false);
 	void draw(sf::RenderWindow &window) const;
 };

@@ -35,7 +35,7 @@ void Button::setRectangle(int _x, int _y, int _w, int _h)
 	setText(text.getString());
 }
 
-void Button::setText(sf::String _text)
+void Button::setText(const sf::String &_text)
 {
 	text.setString(_text);
 

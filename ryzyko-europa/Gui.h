@@ -11,7 +11,6 @@ using namespace std;
 enum GuiCompType
 {
 	Butt1,
-	Butt2,
 	NumInp1,
 	NumInp2,
 	NumInp3,
@@ -26,7 +25,7 @@ public:
 	~Gui();
 	GuiComponent* getComponent(int index);
 	GuiCompType handleEvent(sf::Event &e);
-	void draw(sf::RenderWindow &window);
+	void draw(sf::RenderWindow &window, bool with);
 };
 
 #endif

@@ -1,4 +1,5 @@
 #include "Map.h"
+#include <map>
 
 Map::Map()
 {
@@ -63,6 +64,49 @@ void Map::init(sf::Font &font)
 	provinces_vec[39].neighbours.assign({ 34, 41 });
 	provinces_vec[40].neighbours.assign({ 33, 37 });
 	provinces_vec[41].neighbours.assign({ 38, 39 });
+
+	provinces_vec[0].type = TerrainType::Mountains;
+	provinces_vec[1].type = TerrainType::Plains;
+	provinces_vec[2].type = TerrainType::Plains;
+	provinces_vec[3].type = TerrainType::Mountains;
+	provinces_vec[4].type = TerrainType::Forest;
+	provinces_vec[5].type = TerrainType::City;
+	provinces_vec[6].type = TerrainType::City;
+	provinces_vec[7].type = TerrainType::Mountains;
+	provinces_vec[8].type = TerrainType::Forest;
+	provinces_vec[9].type = TerrainType::Forest;
+	provinces_vec[10].type = TerrainType::Mountains;
+	provinces_vec[11].type = TerrainType::City;
+	provinces_vec[12].type = TerrainType::Plains;
+	provinces_vec[13].type = TerrainType::City;
+	provinces_vec[14].type = TerrainType::City;
+	provinces_vec[15].type = TerrainType::Plains;
+	provinces_vec[16].type = TerrainType::Plains;
+	provinces_vec[17].type = TerrainType::City;
+	provinces_vec[18].type = TerrainType::Plains;
+	provinces_vec[19].type = TerrainType::Mountains;
+	provinces_vec[20].type = TerrainType::Forest;
+	provinces_vec[21].type = TerrainType::Plains;
+	provinces_vec[22].type = TerrainType::Mountains;
+	provinces_vec[23].type = TerrainType::Plains;
+	provinces_vec[24].type = TerrainType::Plains;
+	provinces_vec[25].type = TerrainType::Forest;
+	provinces_vec[26].type = TerrainType::Forest;
+	provinces_vec[27].type = TerrainType::Mountains;
+	provinces_vec[28].type = TerrainType::Plains;
+	provinces_vec[29].type = TerrainType::Forest;
+	provinces_vec[30].type = TerrainType::Forest;
+	provinces_vec[31].type = TerrainType::City;
+	provinces_vec[32].type = TerrainType::Plains;
+	provinces_vec[33].type = TerrainType::City;
+	provinces_vec[34].type = TerrainType::Forest;
+	provinces_vec[35].type = TerrainType::Plains;
+	provinces_vec[36].type = TerrainType::Forest;
+	provinces_vec[37].type = TerrainType::Plains;
+	provinces_vec[38].type = TerrainType::Plains;
+	provinces_vec[39].type = TerrainType::Forest;
+	provinces_vec[40].type = TerrainType::City;
+	provinces_vec[41].type = TerrainType::Mountains;
 }
 
 int Map::getProvinceId(int x, int y) const
@@ -74,6 +118,16 @@ int Map::getProvinceId(int x, int y) const
 		return -1;
 
 	return index_vec[x][y];
+}
+
+Province& Map::getActiveProvince()
+{
+	return provinces_vec[active_province_id];
+}
+
+int Map::getActiveProvinceId() const
+{
+	return active_province_id;
 }
 
 void Map::analyzeImage(sf::Font &font)
@@ -142,6 +196,7 @@ void printColor(sf::Color &color)
 	cout << "( " << (int)color.r << ", " << (int)color.g << ", " << (int)color.r << " )";
 }
 
+/*
 void Map::setProvinceColor(int id, const sf::Color &color)
 {
 	if (id == -1)
@@ -154,6 +209,35 @@ void Map::setProvinceColor(Province& province, const sf::Color &color)
 {
 	province.setColor(color, image);
 }
+*/
+
+void Map::setActiveProvince(int id, bool with_neighbours)
+{
+	if (active_province_id != -1)
+	{
+		provinces_vec[active_province_id].changeCurrentColor(image, true);
+		if (show_neighbours)
+		{
+			for (auto neighbour : provinces_vec[active_province_id].neighbours)
+				provinces_vec[neighbour].changeCurrentColor(image, true);
+		}
+	}
+
+	if (id != -1)
+	{
+		provinces_vec[id].setTempColor(sf::Color::Red, image);
+		if (with_neighbours)
+		{
+			for (auto neighbour : provinces_vec[id].neighbours)
+				provinces_vec[neighbour].setTempColor(sf::Color::Yellow, image);
+		}
+	}
+
+	texture.loadFromImage(image);
+
+	active_province_id = id;
+	show_neighbours = with_neighbours;
+}
 
 int Map::updateActiveProvince(int x, int y, bool with_neighbours)
 {
@@ -163,35 +247,11 @@ int Map::updateActiveProvince(int x, int y, bool with_neighbours)
 	if (x < 0 || image.getSize().x <= x || y < 0 || image.getSize().y <= y)
 		return -1;
 
-	int next_province_id = -1;
-	if (active_province_id != index_vec[x][y])
-		next_province_id = index_vec[x][y];
+	int next_id = index_vec[x][y];
+	if (next_id == active_province_id)
+		next_id = -1;
 
-	if (active_province_id != -1)
-	{
-		setProvinceColor(active_province_id, sf::Color::Blue);
-		if (show_neighbours)
-		{
-			for (auto neighbour : provinces_vec[active_province_id].neighbours)
-				setProvinceColor(neighbour, sf::Color::Blue);
-		}
-	}
-
-	if (next_province_id != -1)
-	{
-		setProvinceColor(next_province_id, sf::Color::Red);
-		if (with_neighbours)
-		{
-			for (auto neighbour : provinces_vec[next_province_id].neighbours)
-				setProvinceColor(neighbour, sf::Color::Yellow);
-		}
-	}
-
-	texture.loadFromImage(image);
-
-	active_province_id = next_province_id;
-	show_neighbours = with_neighbours;
-	
+	setActiveProvince(next_id, with_neighbours);
 	return active_province_id;
 }
 

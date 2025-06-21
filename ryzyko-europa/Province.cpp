@@ -2,7 +2,16 @@
 
 Province::Province()
 {
-	type = ProvinceType::Mountain;
+	player_index = -1;
+
+	type = TerrainType::Mountains;
+
+	basic_color = sf::Color::Blue;
+	curr_color = sf::Color::Blue;
+
+	units[0] = 1;
+	units[1] = 0;
+	units[2] = 0;
 }
 
 Province::Province(int _index, sf::Font &font, const sf::String &str) : Province()
@@ -14,6 +23,26 @@ Province::Province(int _index, sf::Font &font, const sf::String &str) : Province
 	text.setFillColor(sf::Color::Black);
 
 	text.setString(str);
+}
+
+int Province::getPlayerIndex() const
+{
+	return player_index;
+}
+
+TerrainType Province::getType() const
+{
+	return type;
+}
+
+Units& Province::getUnits()
+{
+	return units;
+}
+
+void Province::setPlayerIndex(int index)
+{
+	player_index = index;
 }
 
 void Province::setString(const sf::String &str)
@@ -31,21 +60,44 @@ void Province::setCenter(const sf::Vector2<double>& _center)
 	cout << text.getPosition().x << ", " << text.getPosition().y << '\n';
 }
 
-void Province::setColor(const sf::Color &_color, sf::Image &image)
+void Province::setBasicColor(const sf::Color &_color, sf::Image &image, bool change_to_basic)
 {
-	if (color == _color)
-		return;
+	basic_color = _color;
 
-	color = _color;
-	for (auto& pixel : pixels)
+	if (change_to_basic)
+		changeCurrentColor(image, true);
+}
+
+void Province::setTempColor(const sf::Color &_color, sf::Image &image, bool change_to_temp)
+{
+	temp_color = _color;
+
+	if (change_to_temp)
+		changeCurrentColor(image, false);
+}
+
+void Province::changeCurrentColor(sf::Image &image, bool to_basic)
+{
+	if (to_basic)
 	{
-		image.setPixel(pixel.x, pixel.y, color);
+		if (curr_color == basic_color)
+			return;
+		curr_color = basic_color;
 	}
+	else
+	{
+		if (curr_color == temp_color)
+			return;
+		curr_color = temp_color;
+	}
+
+	for (auto& pixel : pixels)
+		image.setPixel(pixel.x, pixel.y, curr_color);
 }
 
 void Province::print() const
 {
-	cout << units.count_tab[0] << ", " << units.count_tab[1] << ", " << units.count_tab[2];
+	cout << units[0] << ", " << units[1] << ", " << units[2];
 }
 
 void Province::draw(sf::RenderWindow &window) const
