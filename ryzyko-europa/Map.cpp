@@ -107,6 +107,49 @@ void Map::init(sf::Font &font)
 	provinces_vec[39].type = TerrainType::Forest;
 	provinces_vec[40].type = TerrainType::City;
 	provinces_vec[41].type = TerrainType::Mountains;
+
+	provinces_vec[0].setString("Alaska");
+	provinces_vec[1].setString("Nw.Territory");
+	provinces_vec[2].setString("Alberta");
+	provinces_vec[3].setString("W.USA");
+	provinces_vec[4].setString("Mexico");
+	provinces_vec[5].setString("E.USA");
+	provinces_vec[6].setString("Ontario");
+	provinces_vec[7].setString("Peru");
+	provinces_vec[8].setString("Colombia");
+	provinces_vec[9].setString("Brazil");
+	provinces_vec[10].setString("Argentina");
+	provinces_vec[11].setString("Quebec");
+	provinces_vec[12].setString("Greenland");
+	provinces_vec[13].setString("UK");
+	provinces_vec[14].setString("W.Europe");
+	provinces_vec[15].setString("Iceland");
+	provinces_vec[16].setString("Sahara");
+	provinces_vec[17].setString("C.Europe");
+	provinces_vec[18].setString("Scandinavia");
+	provinces_vec[19].setString("S.Europe");
+	provinces_vec[20].setString("Kongo");
+	provinces_vec[21].setString("Egypt");
+	provinces_vec[22].setString("S.Africa");
+	provinces_vec[23].setString("E.Europe");
+	provinces_vec[24].setString("M.East");
+	provinces_vec[25].setString("Ethiopia");
+	provinces_vec[26].setString("Madagascar");
+	provinces_vec[27].setString("Afghanistan");
+	provinces_vec[28].setString("Ural");
+	provinces_vec[29].setString("India");
+	provinces_vec[30].setString("Siberia");
+	provinces_vec[31].setString("China");
+	provinces_vec[32].setString("Irkutsk");
+	provinces_vec[33].setString("Korea");
+	provinces_vec[34].setString("Indonesia");
+	provinces_vec[35].setString("Yakutsk");
+	provinces_vec[36].setString("Thailand");
+	provinces_vec[37].setString("Kamchatka");
+	provinces_vec[38].setString("W.Australia");
+	provinces_vec[39].setString("N.Guinea");
+	provinces_vec[40].setString("Japan");
+	provinces_vec[41].setString("E.Australia");
 }
 
 int Map::getProvinceId(int x, int y) const

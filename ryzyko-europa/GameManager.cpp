@@ -1,4 +1,7 @@
 #include "GameManager.h"
+#include <string>
+#include <iomanip>
+#include <sstream>
 
 GameManager::GameManager()
 {
@@ -48,24 +51,65 @@ GameManager::GameManager(Map* _map, Gui* _gui, sf::Font &font) : GameManager()
 		active_province_texts[i].setCharacterSize(20);
 		active_province_texts[i].setFillColor(sf::Color::Black);
 		setActiveProvinceText(i, "0");
+
+		small_texts[i].setFont(font);
+		small_texts[i].setCharacterSize(20);
+		small_texts[i].setFillColor(sf::Color::Black);
+
+		small_texts_2[i].setFont(font);
+		small_texts_2[i].setCharacterSize(20);
+		small_texts_2[i].setFillColor(sf::Color::Black);
 	}
+
+	setSmallText(0, "I");
+	setSmallText(1, "C");
+	setSmallText(2, "A");
+
+	setSmallText2(0, "I");
+	setSmallText2(1, "C");
+	setSmallText2(2, "A");
+
+	terrain_rectangle.setPosition(1280 - 160, 100);
+	terrain_rectangle.setSize({ 150, 50 });
+	terrain_rectangle.setFillColor(sf::Color::Red);
 
 	terrain_text.setFont(font);
 	terrain_text.setCharacterSize(20);
 	terrain_text.setFillColor(sf::Color::Black);
 	setText("Terrain");
 
-	terrain_rectangle.setPosition(1280 - 160, 100);
-	terrain_rectangle.setSize({ 150, 50 });
-	terrain_rectangle.setFillColor(sf::Color::Red);
+	result_rectangle.setPosition(1280 - 260, (720 - 500) / 2);
+	result_rectangle.setSize({ 260, 500 });
+	result_rectangle.setFillColor(sf::Color::Yellow);
+
+	result_text.setFont(font);
+	result_text.setCharacterSize(16);
+	result_text.setFillColor(sf::Color::Black);
+	setResultText("");
 }
 
 void GameManager::setActiveProvinceText(int id, const sf::String &_text)
 {
 	active_province_texts[id].setString(_text);
-	sf::FloatRect r = text.getLocalBounds();
+	sf::FloatRect r = active_province_texts[id].getLocalBounds();
 
 	active_province_texts[id].setPosition((float)active_province_rectangle.getPosition().x + ((float)active_province_rectangle.getSize().x - r.width) / 2.f - r.left, (float)active_province_rectangle.getPosition().y + (id * 100.f) + (100.f - r.height) / 2.f - r.top);
+}
+
+void GameManager::setSmallText(int id, const sf::String &_text)
+{
+	small_texts[id].setString(_text);
+	sf::FloatRect r = small_texts[id].getLocalBounds();
+
+	small_texts[id].setPosition(140, 310.f + (id * 60.f) + (50.f - r.height) / 2.f - r.top);
+}
+
+void GameManager::setSmallText2(int id, const sf::String &_text)
+{
+	small_texts_2[id].setString(_text);
+	sf::FloatRect r = small_texts_2[id].getLocalBounds();
+
+	small_texts_2[id].setPosition(1280 - 150, (float)active_province_rectangle.getPosition().y + (id * 100.f) + (100.f - r.height) / 2.f - r.top);
 }
 
 void GameManager::setActiveProvinceTexts()
@@ -132,12 +176,16 @@ void GameManager::handleEvent(sf::Event &event)
 				}
 				else if (stage >= 2)
 				{
-					bool succ = resolveBattle(map->getActiveProvince().getType(), false, map->provinces_vec[first_id].getUnits().count_tab, map->getActiveProvince().getUnits().count_tab);
-					if (succ)
+					pair<bool, wstring> succ = resolveBattle(map->getActiveProvince().getType(), map->getActiveProvince().getCapital(), map->provinces_vec[first_id].getUnits().count_tab, map->getActiveProvince().getUnits().count_tab);
+					if (succ.first)
 					{
 						map->getActiveProvince().setPlayerIndex(current_player);
 						map->getActiveProvince().setBasicColor(players_vec[current_player].getColor(), map->image);
 						map->texture.loadFromImage(map->image);
+
+						swap(map->getActiveProvince().getUnits(), map->provinces_vec[first_id].getUnits());
+
+						setResultText(succ.second); // text
 					}
 					nextTurn();
 				}
@@ -193,14 +241,6 @@ void GameManager::handleEvent(sf::Event &event)
 	}
 }
 
-void GameManager::setText(const string &str)
-{
-	text.setString(str);
-
-	sf::FloatRect rect = text.getLocalBounds();
-	text.setPosition(red_rectangle.getPosition().x + (red_rectangle.getSize().x - rect.width) / 2 - rect.left, red_rectangle.getPosition().y + (75 - rect.height) / 2 - rect.top);
-}
-
 void GameManager::setCurrentPlayer(int curr)
 {
 	current_player = curr;
@@ -228,6 +268,22 @@ void GameManager::setTerrainText()
 	}
 	sf::FloatRect rect = terrain_text.getLocalBounds();
 	terrain_text.setPosition(terrain_rectangle.getPosition().x + (terrain_rectangle.getSize().x - rect.width) / 2 - rect.left, terrain_rectangle.getPosition().y + (terrain_rectangle.getSize().y - rect.height) / 2 - rect.top);
+}
+
+void GameManager::setText(const string &str)
+{
+	text.setString(str);
+
+	sf::FloatRect rect = text.getLocalBounds();
+	text.setPosition(red_rectangle.getPosition().x + (red_rectangle.getSize().x - rect.width) / 2 - rect.left, red_rectangle.getPosition().y + (75 - rect.height) / 2 - rect.top);
+}
+
+void GameManager::setResultText(const sf::String &str)
+{
+	result_text.setString(str);
+
+	sf::FloatRect rect = result_text.getLocalBounds();
+	result_text.setPosition(result_rectangle.getPosition().x + (result_rectangle.getSize().x - rect.width) / 2 - rect.left, result_rectangle.getPosition().y + (result_rectangle.getSize().y - rect.height) / 2 - rect.top);
 }
 
 void GameManager::NumberInputsEvent(int clicked_id)
@@ -381,6 +437,24 @@ void GameManager::draw(sf::RenderWindow &window) const
 	window.draw(red_rectangle);
 	window.draw(text);
 
+	if ((current_phase == PlayerPhase::Recruit || current_phase == PlayerPhase::NextPlayer || stage == 2) && begun)
+	{
+		gui->draw(window, true);
+
+		for (int i = 0; i < 3; ++i)
+		{
+			window.draw(small_rectangles[i]);
+			window.draw(small_texts[i]);
+		}
+	}
+	else
+		gui->draw(window, false);
+
+	if (current_phase == PlayerPhase::NextPlayer)
+	{
+		window.draw(result_rectangle);
+		window.draw(result_text);
+	}
 
 	if (map->active_province_id != -1)
 	{
@@ -390,21 +464,16 @@ void GameManager::draw(sf::RenderWindow &window) const
 
 	if (begun)
 	{
-		for (int i = 0; i < 3; ++i)
-			window.draw(small_rectangles[i]);
-
 		if (map->active_province_id != -1)
 		{
 			window.draw(active_province_rectangle);
 			for (int i = 0; i < 3; ++i)
+			{
 				window.draw(active_province_texts[i]);
+				window.draw(small_texts_2[i]);
+			}
 		}
 	}
-
-	if (current_phase == PlayerPhase::Recruit || current_phase == PlayerPhase::NextPlayer || stage == 2)
-		gui->draw(window, true);
-	else
-		gui->draw(window, false);
 }
 
 // Pomocnicza funkcja: losowanie sumy oczek z koœci
@@ -462,35 +531,66 @@ int getTerrainBonus(UnitType unit, TerrainType terrain, bool isAttack, bool isCa
 }
 
 // W³aœciwa funkcja bitwy
-bool resolveBattle(TerrainType terrain, bool isDefenderCapital, int attackerUnits[3], int defenderUnits[3])
+pair<bool, wstring> resolveBattle(TerrainType terrain, bool isDefenderCapital, int attackerUnits[3], int defenderUnits[3])
 {
 	int attackStrength = 0, defenseStrength = 0;
+	wostringstream log;
 
-	// Oblicz si³ê ataku
+	// --- Atak ---
+	log << L"[ATAK]\n";
 	for (int i = 0; i < 3; ++i) {
 		UnitType type = static_cast<UnitType>(i);
-		int dice = (type == UnitType::Infantry ? 2 : (type == UnitType::Cavalry ? 3 : 1));
-		int unitSum = 0;
-		for (int j = 0; j < attackerUnits[i]; ++j)
-			unitSum += rollDice(dice) + getTerrainBonus(type, terrain, true, false);
-		attackStrength += unitSum;
+		int diceCount = (type == UnitType::Infantry ? 2 : (type == UnitType::Cavalry ? 3 : 1));
+		wstring typeName = (i == 0 ? L"Piechota" : (i == 1 ? L"Kawaleria" : L"Artyleria"));
+
+		if (attackerUnits[i] > 0)
+			log << typeName << L" (" << attackerUnits[i] << L" jednostek):\n";
+
+		for (int j = 0; j < attackerUnits[i]; ++j) {
+			int unitTotal = 0;
+			log << L"  Jednostka " << j + 1 << L": ";
+			for (int d = 0; d < diceCount; ++d) {
+				int roll = rollDice(1);
+				unitTotal += roll;
+				log << roll << L" ";
+			}
+			int bonus = getTerrainBonus(type, terrain, true, false);
+			unitTotal += bonus;
+			attackStrength += unitTotal;
+			log << L"+ premia " << bonus << L" = " << unitTotal << L"\n";
+		}
 	}
 
-	// Oblicz si³ê obrony
+	// --- Obrona ---
+	log << L"\n[OBRONA]\n";
 	for (int i = 0; i < 3; ++i) {
 		UnitType type = static_cast<UnitType>(i);
-		int dice = (type == UnitType::Infantry ? 2 : (type == UnitType::Cavalry ? 1 : 3));
-		int unitSum = 0;
-		for (int j = 0; j < defenderUnits[i]; ++j)
-			unitSum += rollDice(dice) + getTerrainBonus(type, terrain, false, isDefenderCapital);
-		defenseStrength += unitSum;
+		int diceCount = (type == UnitType::Infantry ? 2 : (type == UnitType::Cavalry ? 1 : 3));
+		wstring typeName = (i == 0 ? L"Piechota" : (i == 1 ? L"Kawaleria" : L"Artyleria"));
+
+		if (defenderUnits[i] > 0)
+			log << typeName << L" (" << defenderUnits[i] << L" jednostek):\n";
+
+		for (int j = 0; j < defenderUnits[i]; ++j) {
+			int unitTotal = 0;
+			log << L"  Jednostka " << j + 1 << L": ";
+			for (int d = 0; d < diceCount; ++d) {
+				int roll = rollDice(1);
+				unitTotal += roll;
+				log << roll << L" ";
+			}
+			int bonus = getTerrainBonus(type, terrain, false, isDefenderCapital);
+			unitTotal += bonus;
+			defenseStrength += unitTotal;
+			log << L"+ premia " << bonus << L" = " << unitTotal << L"\n";
+		}
 	}
 
-	cout << "\nSi³a ataku: " << attackStrength << ", si³a obrony: " << defenseStrength << endl;
+	log << L"\nSi³a ataku: " << attackStrength << L", si³a obrony: " << defenseStrength << L"\n";
 
-	// Oblicz straty i zwyciêzcê
+	// --- Wynik i straty ---
 	if (attackStrength > defenseStrength) {
-		cout << "Atakuj¹cy wygrywa!\n";
+		log << L"Atakuj¹cy wygrywa!\n";
 		int totalAttackers = attackerUnits[0] + attackerUnits[1] + attackerUnits[2];
 		float lossRatio = (float)defenseStrength / attackStrength;
 		int totalLoss = static_cast<int>(lossRatio * totalAttackers);
@@ -501,11 +601,14 @@ bool resolveBattle(TerrainType terrain, bool isDefenderCapital, int attackerUnit
 
 		defenderUnits[0] = defenderUnits[1] = defenderUnits[2] = 0;
 
-		cout << "Pozostali atakuj¹cy: P: " << attackerUnits[0] << ", K: " << attackerUnits[1] << ", A: " << attackerUnits[2] << endl;
-		return true;
+		log << L"Pozostali atakuj¹cy: P: " << attackerUnits[0]
+			<< L", K: " << attackerUnits[1]
+			<< L", A: " << attackerUnits[2] << L"\n";
+
+		return { true, log.str() };
 	}
 	else {
-		cout << "Obroñca wygrywa!\n";
+		log << L"Obroñca wygrywa!\n";
 		int totalDefenders = defenderUnits[0] + defenderUnits[1] + defenderUnits[2];
 		float lossRatio = (float)attackStrength / defenseStrength;
 		int totalLoss = static_cast<int>(lossRatio * totalDefenders);
@@ -516,7 +619,10 @@ bool resolveBattle(TerrainType terrain, bool isDefenderCapital, int attackerUnit
 
 		attackerUnits[0] = attackerUnits[1] = attackerUnits[2] = 0;
 
-		cout << "Pozostali obroñcy: P: " << defenderUnits[0] << ", K: " << defenderUnits[1] << ", A: " << defenderUnits[2] << endl;
-		return false;
+		log << L"Pozostali obroñcy: P: " << defenderUnits[0]
+			<< L", K: " << defenderUnits[1]
+			<< L", A: " << defenderUnits[2] << L"\n";
+
+		return { false, log.str() };
 	}
 }

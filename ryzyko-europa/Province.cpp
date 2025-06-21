@@ -19,10 +19,15 @@ Province::Province(int _index, sf::Font &font, const sf::String &str) : Province
 	index = _index;
 
 	text.setFont(font);
-	text.setCharacterSize(20);
+	text.setCharacterSize(17);
 	text.setFillColor(sf::Color::Black);
 
 	text.setString(str);
+}
+
+bool Province::getCapital() const
+{
+	return capital;
 }
 
 int Province::getPlayerIndex() const
@@ -38,6 +43,11 @@ TerrainType Province::getType() const
 Units& Province::getUnits()
 {
 	return units;
+}
+
+void Province::setCapital(bool _capital)
+{
+	capital = _capital;
 }
 
 void Province::setPlayerIndex(int index)
@@ -57,7 +67,7 @@ void Province::setCenter(const sf::Vector2<double>& _center)
 	sf::FloatRect rect = text.getLocalBounds();
 
 	text.setPosition(center.x - rect.width / 2.f - rect.left, center.y - rect.height / 2.f - rect.top);
-	cout << text.getPosition().x << ", " << text.getPosition().y << '\n';
+	// cout << text.getPosition().x << ", " << text.getPosition().y << '\n';
 }
 
 void Province::setBasicColor(const sf::Color &_color, sf::Image &image, bool change_to_basic)

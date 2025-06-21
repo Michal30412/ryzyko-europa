@@ -19,6 +19,7 @@ class Province
 {
 	friend class Map;
 
+	bool capital;
 	int index;
 	int player_index;
 
@@ -38,9 +39,11 @@ class Province
 public:
 	Province();
 	Province(int _index, sf::Font &font, const sf::String &str = "");
+	bool getCapital() const;
 	int getPlayerIndex() const;
 	TerrainType getType() const;
 	Units& getUnits();
+	void setCapital(bool _capital);
 	void setPlayerIndex(int index);
 	void setString(const sf::String &str);
 	void setCenter(const sf::Vector2<double>& _center);
